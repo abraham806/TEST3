@@ -1,0 +1,67 @@
+{
+  "general": {
+    "search": { "search": "Rechercher", "no_results": "Aucun résultat pour \"{{ terms }}\".", "placeholder": "Rechercher…" },
+    "close": "Fermer",
+    "loading": "Chargement…",
+    "or": "ou"
+  },
+  "products": {
+    "product": {
+      "add_to_cart": "Ajouter au panier",
+      "sold_out": "Épuisé",
+      "unavailable": "Indisponible",
+      "view": "Voir le produit",
+      "from_price_html": "À partir de {{ price }}",
+      "unit_price_separator": "par",
+      "quantity": { "label": "Quantité", "increase": "Augmenter la quantité", "decrease": "Diminuer la quantité" },
+      "pickup_availability": { "pick_up_available": "Retrait disponible" }
+    },
+    "general": { "from_text": "À partir de", "sale": "Solde", "new": "Nouveau" }
+  },
+  "cart": {
+    "general": {
+      "title": "Panier",
+      "empty": "Votre panier est vide.",
+      "empty_cta": "Continuer vos achats",
+      "subtotal": "Sous-total",
+      "checkout": "Commander",
+      "note": "Note de commande (optionnel)",
+      "remove": "Supprimer",
+      "item_removed": "Article supprimé",
+      "item_added": "Ajouté au panier",
+      "update": "Mettre à jour le panier"
+    }
+  },
+  "sections": {
+    "header": { "cart_count": "{{ count }} articles" },
+    "footer": { "copyright": "Tous droits réservés" }
+  },
+  "blogs": {
+    "article": { "by_author": "Par {{ author }}", "posted_in": "Catégorie:", "read_more": "Lire la suite" },
+    "comments": { "title": "Commentaires", "moderated": "Les commentaires sont modérés.", "no_comments": "Aucun commentaire.", "post": "Publier" }
+  },
+  "accounts": {
+    "login": { "title": "Connexion", "submit": "Se connecter", "guest": "Continuer en tant qu'invité", "forgot_password": "Mot de passe oublié ?" },
+    "register": { "title": "Créer un compte", "submit": "Créer un compte" },
+    "reset_password": { "title": "Réinitialiser le mot de passe", "submit": "Envoyer le lien" }
+  },
+  "contact": {
+    "form": { "name": "Nom", "email": "Email", "phone": "Téléphone", "message": "Message", "submit": "Envoyer", "post_success": "Merci de nous avoir contactés." }
+  },
+  "pagination": {
+    "previous": "Précédent",
+    "next": "Suivant",
+    "current_page": "Page {{ current }} sur {{ total }}"
+  },
+  "errors": {
+    "sold_out": "Désolé, ce produit est épuisé.",
+    "unavailable": "Désolé, ce produit n'est pas disponible.",
+    "cart": { "invalid_quantity": "La quantité ne peut pas être inférieure à {{ min }}." }
+  },
+  "accessibility": {
+    "skip_to_content": "Passer au contenu",
+    "close": "Fermer",
+    "open_media": "Ouvrir le média",
+    "link_messages": { "new_window": "(ouvre dans un nouvel onglet)" }
+  }
+}

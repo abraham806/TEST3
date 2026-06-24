@@ -1,0 +1,135 @@
+<footer class="ng-footer" role="contentinfo">
+  <div class="ng-container">
+    <div class="ng-footer__grid">
+
+      <!-- ── Brand col ── -->
+      <div class="ng-footer__brand">
+        <div class="ng-header__logo" style="margin-bottom:1.6rem;">
+          {%- if settings.logo != blank -%}
+            <img src="{{ settings.logo | image_url: width: 240 }}" alt="{{ shop.name }}" style="max-width:140px;filter:brightness(0) invert(1);" loading="lazy">
+          {%- else -%}
+            <span class="ng-header__logo-text" style="color:#fff;">{{ settings.logo_text | default: shop.name }}</span>
+          {%- endif -%}
+        </div>
+        {%- if section.settings.brand_desc != blank -%}
+          <p>{{ section.settings.brand_desc }}</p>
+        {%- endif -%}
+        <!-- Social icons -->
+        <div class="ng-footer__social" style="margin-top:2.4rem;">
+          {%- if settings.social_instagram != blank -%}
+            <a href="{{ settings.social_instagram }}" class="ng-footer__social-icon" target="_blank" rel="noopener" aria-label="Instagram">{%- render 'ng-icon', icon: 'instagram', size: 18 -%}</a>
+          {%- endif -%}
+          {%- if settings.social_tiktok != blank -%}
+            <a href="{{ settings.social_tiktok }}" class="ng-footer__social-icon" target="_blank" rel="noopener" aria-label="TikTok">{%- render 'ng-icon', icon: 'tiktok', size: 18 -%}</a>
+          {%- endif -%}
+          {%- if settings.social_facebook != blank -%}
+            <a href="{{ settings.social_facebook }}" class="ng-footer__social-icon" target="_blank" rel="noopener" aria-label="Facebook">{%- render 'ng-icon', icon: 'facebook', size: 18 -%}</a>
+          {%- endif -%}
+          {%- if settings.social_youtube != blank -%}
+            <a href="{{ settings.social_youtube }}" class="ng-footer__social-icon" target="_blank" rel="noopener" aria-label="YouTube">{%- render 'ng-icon', icon: 'youtube', size: 18 -%}</a>
+          {%- endif -%}
+          {%- if settings.social_twitter != blank -%}
+            <a href="{{ settings.social_twitter }}" class="ng-footer__social-icon" target="_blank" rel="noopener" aria-label="Twitter">{%- render 'ng-icon', icon: 'twitter', size: 18 -%}</a>
+          {%- endif -%}
+        </div>
+      </div>
+
+      <!-- ── Link cols ── -->
+      {%- if section.settings.col2_menu != blank -%}
+        <div>
+          <p class="ng-footer__heading">{{ section.settings.col2_title | default: 'Liens rapides' }}</p>
+          <ul class="ng-footer__links">
+            {%- for link in linklists[section.settings.col2_menu].links -%}
+              <li><a href="{{ link.url }}" class="ng-footer__link">{{ link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.col3_menu != blank -%}
+        <div>
+          <p class="ng-footer__heading">{{ section.settings.col3_title | default: 'Informations' }}</p>
+          <ul class="ng-footer__links">
+            {%- for link in linklists[section.settings.col3_menu].links -%}
+              <li><a href="{{ link.url }}" class="ng-footer__link">{{ link.title }}</a></li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+
+      <!-- ── Newsletter col ── -->
+      <div>
+        <p class="ng-footer__heading">{{ section.settings.newsletter_title | default: 'Restez informé' }}</p>
+        <p style="font-size:1.3rem;color:rgba(255,255,255,.6);margin-bottom:1.6rem;">{{ section.settings.newsletter_text | default: 'Offres exclusives et nouveautés en avant-première.' }}</p>
+        {%- form 'customer', id: 'ng-footer-newsletter' -%}
+          <input type="hidden" name="contact[tags]" value="newsletter">
+          {%- if form.posted_successfully? -%}
+            <p style="color:var(--ng-accent-2);font-weight:600;font-size:1.4rem;">✓ Merci pour votre inscription !</p>
+          {%- else -%}
+            <div class="ng-footer__newsletter-form">
+              <input
+                type="email"
+                name="contact[email]"
+                placeholder="votre@email.com"
+                required
+                autocomplete="email"
+                aria-label="Votre adresse email"
+              >
+              <button type="submit" class="ng-btn ng-btn--primary ng-btn--sm" style="border-radius:0;white-space:nowrap;">
+                S'inscrire
+              </button>
+            </div>
+          {%- endif -%}
+        {%- endform -%}
+      </div>
+    </div>
+
+    <!-- ── Bottom bar ── -->
+    <div class="ng-footer__bottom">
+      <span>© {{ 'now' | date: '%Y' }} {{ shop.name }}. {{ 'sections.footer.copyright' | t }}.</span>
+      <div style="display:flex;gap:1.6rem;flex-wrap:wrap;justify-content:center;">
+        {%- if shop.privacy_policy != blank -%}
+          <a href="{{ shop.privacy_policy.url }}" class="ng-footer__link" style="font-size:1.2rem;">Politique de confidentialité</a>
+        {%- endif -%}
+        {%- if shop.terms_of_service != blank -%}
+          <a href="{{ shop.terms_of_service.url }}" class="ng-footer__link" style="font-size:1.2rem;">CGV</a>
+        {%- endif -%}
+        {%- if shop.refund_policy != blank -%}
+          <a href="{{ shop.refund_policy.url }}" class="ng-footer__link" style="font-size:1.2rem;">Remboursements</a>
+        {%- endif -%}
+      </div>
+      {%- if section.settings.show_payments -%}
+        <div class="ng-footer__payments">
+          {%- for type in shop.enabled_payment_types -%}
+            {{ type | payment_type_svg_tag: class: 'ng-footer__payment-icon' }}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "class": "ng-footer-section",
+  "limit": 1,
+  "settings": [
+    { "type": "textarea", "id": "brand_desc", "label": "Description de la marque", "default": "Votre boutique de référence pour des produits premium." },
+    { "type": "header", "content": "Colonne 2 — Liens" },
+    { "type": "text", "id": "col2_title", "label": "Titre colonne 2", "default": "Liens rapides" },
+    { "type": "link_list", "id": "col2_menu", "label": "Menu colonne 2", "default": "footer" },
+    { "type": "header", "content": "Colonne 3 — Liens" },
+    { "type": "text", "id": "col3_title", "label": "Titre colonne 3", "default": "Informations" },
+    { "type": "link_list", "id": "col3_menu", "label": "Menu colonne 3" },
+    { "type": "header", "content": "Newsletter" },
+    { "type": "text", "id": "newsletter_title", "label": "Titre newsletter", "default": "Restez informé" },
+    { "type": "text", "id": "newsletter_text", "label": "Texte newsletter", "default": "Offres exclusives et nouveautés en avant-première." },
+    { "type": "header", "content": "Options" },
+    { "type": "checkbox", "id": "show_payments", "label": "Afficher les icônes de paiement", "default": true },
+    { "type": "header", "content": "Espacements" },
+    { "type": "range", "id": "padding_top", "min": 40, "max": 160, "step": 8, "default": 80, "unit": "px", "label": "Padding supérieur (bureau)" },
+    { "type": "range", "id": "padding_top_mobile", "min": 40, "max": 100, "step": 8, "default": 56, "unit": "px", "label": "Padding supérieur (mobile)" }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,35 @@
+{%- if paginate.pages > 1 -%}
+  <nav class="ng-pagination" aria-label="Pagination">
+    {%- if paginate.previous -%}
+      <div class="ng-pagination__item">
+        <a href="{{ paginate.previous.url }}" aria-label="{{ 'pagination.previous' | t }}">
+          {%- render 'ng-icon', icon: 'chevron-left', size: 16 -%}
+        </a>
+      </div>
+    {%- endif -%}
+
+    {%- for part in paginate.parts -%}
+      {%- if part.is_link -%}
+        <div class="ng-pagination__item">
+          <a href="{{ part.url }}">{{ part.title }}</a>
+        </div>
+      {%- elsif part.title == paginate.current_page -%}
+        <div class="ng-pagination__item ng-pagination__item--current">
+          <span aria-current="page">{{ part.title }}</span>
+        </div>
+      {%- else -%}
+        <div class="ng-pagination__item">
+          <span>{{ part.title }}</span>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+
+    {%- if paginate.next -%}
+      <div class="ng-pagination__item">
+        <a href="{{ paginate.next.url }}" aria-label="{{ 'pagination.next' | t }}">
+          {%- render 'ng-icon', icon: 'chevron-right', size: 16 -%}
+        </a>
+      </div>
+    {%- endif -%}
+  </nav>
+{%- endif -%}

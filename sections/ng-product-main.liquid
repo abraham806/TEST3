@@ -1,0 +1,289 @@
+{%- liquid
+  assign product = product
+  assign current_variant = product.selected_or_first_available_variant
+  assign has_only_default = false
+  if product.has_only_default_variant
+    assign has_only_default = true
+  endif
+-%}
+
+{%- style -%}
+  .ng-product-{{ section.id }} {
+    padding-top:    {{ section.settings.padding_top_mobile }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    background:     {{ section.settings.bg_color }};
+  }
+  @media (min-width: 990px) {
+    .ng-product-{{ section.id }} {
+      padding-top:    {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+    }
+    .ng-product-{{ section.id }} .ng-product__layout {
+      gap: {{ section.settings.gallery_info_gap }}rem;
+    }
+    .ng-product-{{ section.id }} .ng-product-gallery__main {
+      aspect-ratio: {{ section.settings.gallery_ratio }};
+    }
+  }
+{%- endstyle -%}
+
+<div class="ng-product ng-product-{{ section.id }}" data-ng-product>
+  <div class="ng-container">
+    <div class="ng-product__layout">
+
+      <!-- ── Gallery ── -->
+      <div class="ng-product-gallery">
+        {%- if product.images.size > 1 -%}
+          <div class="ng-product-gallery__thumbs">
+            {%- for image in product.images limit: 8 -%}
+              <div class="ng-product-gallery__thumb{% if forloop.first %} is-active{% endif %}">
+                {{ image | image_url: width: 200 | image_tag: loading: 'lazy', alt: image.alt | escape }}
+              </div>
+            {%- endfor -%}
+          </div>
+        {%- endif -%}
+        <div class="ng-product-gallery__main">
+          {{ current_variant.featured_image | default: product.featured_image | image_url: width: 1200 | image_tag:
+            loading: 'eager',
+            fetchpriority: 'high',
+            widths: '600,800,1000,1200',
+            sizes: '(min-width:990px) 50vw, 100vw',
+            id: 'ng-product-gallery-main'
+          }}
+        </div>
+      </div>
+
+      <!-- ── Info ── -->
+      <div class="ng-product-info">
+        {%- if product.vendor != blank -%}
+          <div class="ng-product-info__vendor">{{ product.vendor }}</div>
+        {%- endif -%}
+
+        <h1 class="ng-product-info__title">{{ product.title }}</h1>
+
+        <!-- Price -->
+        <div class="ng-product-info__price" data-ng-price>
+          {%- render 'ng-price', product: product, variant: current_variant -%}
+        </div>
+
+        <!-- Product form -->
+        {%- form 'product', product, id: 'ng-product-form', data-ng-product-form: '', data-product-json: product.variants | json -%}
+          <input type="hidden" name="id" value="{{ current_variant.id }}">
+
+          <!-- Variant pills -->
+          {%- unless has_only_default -%}
+            {%- for option in product.options_with_values -%}
+              <div class="ng-variant-group">
+                <div class="ng-variant-group__label">
+                  {{ option.name }}
+                  <span id="ng-selected-{{ option.position }}">{{ option.selected_value }}</span>
+                </div>
+                <div class="ng-variant-pills">
+                  {%- for value in option.values -%}
+                    {%- liquid
+                      assign variant_for_value = null
+                      for variant in product.variants
+                        if variant.option1 == value or variant.option2 == value or variant.option3 == value
+                          assign variant_for_value = variant
+                          break
+                        endif
+                      endfor
+                    -%}
+                    <button
+                      type="button"
+                      class="ng-variant-pill{% if option.selected_value == value %} is-selected{% endif %}{% unless variant_for_value.available %} is-unavailable{% endunless %}"
+                      data-ng-option
+                      data-name="{{ option.name }}"
+                      data-value="{{ value | escape }}"
+                      aria-label="{{ option.name }}: {{ value }}"
+                      {% unless variant_for_value.available %}aria-disabled="true"{% endunless %}
+                    >{{ value }}</button>
+                  {%- endfor -%}
+                </div>
+              </div>
+            {%- endfor -%}
+          {%- endunless -%}
+
+          <!-- Quantity -->
+          {%- if section.settings.show_quantity -%}
+            <div class="ng-form-group">
+              <label class="ng-label" for="ng-qty-input">Quantité</label>
+              <div class="ng-qty">
+                <button type="button" class="ng-qty__btn" aria-label="Diminuer">−</button>
+                <input class="ng-qty__input" id="ng-qty-input" type="number" name="quantity" value="1" min="1" aria-label="Quantité">
+                <button type="button" class="ng-qty__btn" aria-label="Augmenter">+</button>
+              </div>
+            </div>
+          {%- endif -%}
+
+          <!-- ATC button — trigger for sticky ATC -->
+          <div class="ng-atc-area" data-ng-atc-trigger>
+            <button
+              type="submit"
+              name="add"
+              class="ng-btn ng-btn--primary ng-btn--full"
+              data-ng-atc-btn
+              data-default-text="{{ 'products.product.add_to_cart' | t }}"
+              {% unless current_variant.available %}disabled{% endunless %}
+            >
+              {%- if current_variant.available -%}
+                {{ 'products.product.add_to_cart' | t }}
+              {%- else -%}
+                {{ 'products.product.sold_out' | t }}
+              {%- endif -%}
+            </button>
+            {%- if section.settings.show_dynamic_checkout -%}
+              {{ form | payment_button }}
+            {%- endif -%}
+          </div>
+        {%- endform -%}
+
+        <!-- Trust badges -->
+        {%- if section.settings.show_trust -%}
+          <div class="ng-trust-badges">
+            <div class="ng-trust-badge">
+              {%- render 'ng-icon', icon: 'truck', size: 18 -%}
+              <span>{{ section.settings.trust_1 | default: 'Livraison offerte dès 60€' }}</span>
+            </div>
+            <div class="ng-trust-badge">
+              {%- render 'ng-icon', icon: 'refresh', size: 18 -%}
+              <span>{{ section.settings.trust_2 | default: 'Retours gratuits 30 jours' }}</span>
+            </div>
+            <div class="ng-trust-badge">
+              {%- render 'ng-icon', icon: 'shield', size: 18 -%}
+              <span>{{ section.settings.trust_3 | default: 'Paiement 100% sécurisé' }}</span>
+            </div>
+          </div>
+        {%- endif -%}
+
+        <!-- Tabs / Accordéon -->
+        {%- if product.description != blank or section.settings.tab2_title != blank -%}
+          <div class="ng-product-tabs">
+            {%- if product.description != blank -%}
+              <div class="ng-tab is-open">
+                <button class="ng-tab__trigger" type="button">
+                  {{ section.settings.tab1_title | default: 'Description' }}
+                  <svg class="ng-tab__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <div class="ng-tab__body">
+                  <div class="ng-tab__content ng-rte">{{ product.description }}</div>
+                </div>
+              </div>
+            {%- endif -%}
+            {%- if section.settings.tab2_title != blank and section.settings.tab2_content != blank -%}
+              <div class="ng-tab">
+                <button class="ng-tab__trigger" type="button">
+                  {{ section.settings.tab2_title }}
+                  <svg class="ng-tab__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <div class="ng-tab__body">
+                  <div class="ng-tab__content ng-rte">{{ section.settings.tab2_content }}</div>
+                </div>
+              </div>
+            {%- endif -%}
+            {%- if section.settings.tab3_title != blank and section.settings.tab3_content != blank -%}
+              <div class="ng-tab">
+                <button class="ng-tab__trigger" type="button">
+                  {{ section.settings.tab3_title }}
+                  <svg class="ng-tab__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                </button>
+                <div class="ng-tab__body">
+                  <div class="ng-tab__content ng-rte">{{ section.settings.tab3_content }}</div>
+                </div>
+              </div>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Sticky ATC (mobile) ── -->
+  <div class="ng-sticky-atc">
+    <div class="ng-sticky-atc__info">
+      <div class="ng-sticky-atc__title">{{ product.title }}</div>
+      <div class="ng-sticky-atc__price">{{ current_variant.price | money }}</div>
+    </div>
+    <button
+      class="ng-btn ng-btn--primary"
+      data-ng-sticky-atc-btn
+      {% unless current_variant.available %}disabled{% endunless %}
+    >
+      {%- if current_variant.available -%}Ajouter{%- else -%}Épuisé{%- endif -%}
+    </button>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Page produit",
+  "tag": "section",
+  "settings": [
+    { "type": "header", "content": "Espacements — Bureau" },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 32, "max": 160, "step": 8, "default": 80,
+      "unit": "px", "label": "Padding supérieur (bureau)"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 32, "max": 160, "step": 8, "default": 80,
+      "unit": "px", "label": "Padding inférieur (bureau)"
+    },
+    {
+      "type": "range",
+      "id": "gallery_info_gap",
+      "min": 3, "max": 16, "step": 1, "default": 10,
+      "unit": "rem", "label": "Écart galerie ↔ infos (bureau)"
+    },
+    {
+      "type": "select",
+      "id": "gallery_ratio",
+      "label": "Ratio image principale (bureau)",
+      "options": [
+        { "value": "1 / 1",  "label": "Carré (1:1)" },
+        { "value": "4 / 5",  "label": "Portrait (4:5)" },
+        { "value": "3 / 4",  "label": "Portrait (3:4)" },
+        { "value": "16 / 9", "label": "Paysage (16:9)" }
+      ],
+      "default": "1 / 1"
+    },
+    { "type": "header", "content": "Espacements — Mobile" },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 24, "max": 100, "step": 8, "default": 40,
+      "unit": "px", "label": "Padding supérieur (mobile)"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 24, "max": 100, "step": 8, "default": 48,
+      "unit": "px", "label": "Padding inférieur (mobile)"
+    },
+    { "type": "header", "content": "Apparence" },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Couleur de fond de la page produit",
+      "default": "#FFFFFF"
+    },
+    { "type": "header", "content": "Formulaire" },
+    { "type": "checkbox", "id": "show_quantity", "label": "Afficher le sélecteur de quantité", "default": true },
+    { "type": "checkbox", "id": "show_dynamic_checkout", "label": "Afficher les boutons paiement direct (Apple Pay, etc.)", "default": true },
+    { "type": "header", "content": "Badges de confiance" },
+    { "type": "checkbox", "id": "show_trust", "label": "Afficher les badges de confiance", "default": true },
+    { "type": "text", "id": "trust_1", "label": "Badge 1", "default": "Livraison offerte dès 60€" },
+    { "type": "text", "id": "trust_2", "label": "Badge 2", "default": "Retours gratuits 30 jours" },
+    { "type": "text", "id": "trust_3", "label": "Badge 3", "default": "Paiement 100% sécurisé" },
+    { "type": "header", "content": "Onglets" },
+    { "type": "text", "id": "tab1_title", "label": "Onglet 1 — Titre", "default": "Description" },
+    { "type": "text", "id": "tab2_title", "label": "Onglet 2 — Titre" },
+    { "type": "richtext", "id": "tab2_content", "label": "Onglet 2 — Contenu" },
+    { "type": "text", "id": "tab3_title", "label": "Onglet 3 — Titre" },
+    { "type": "richtext", "id": "tab3_content", "label": "Onglet 3 — Contenu" }
+  ]
+}
+{% endschema %}

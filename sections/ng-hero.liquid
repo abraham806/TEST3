@@ -1,0 +1,103 @@
+{%- style -%}
+  .ng-hero-{{ section.id }} {
+    min-height: {{ section.settings.height_mobile }}px;
+    --hero-text-align: {{ section.settings.content_align }};
+  }
+  @media(min-width:990px){
+    .ng-hero-{{ section.id }} { min-height: {{ section.settings.height_desktop }}px; }
+  }
+{%- endstyle -%}
+
+<section class="ng-hero ng-hero-{{ section.id }}" style="--overlay-opacity:{{ section.settings.overlay | divided_by: 100.0 }};">
+  {%- if section.settings.image != blank -%}
+    <div class="ng-hero__media">
+      {{
+        section.settings.image
+        | image_url: width: 2400
+        | image_tag:
+          loading: 'eager',
+          fetchpriority: 'high',
+          widths: '750,1100,1500,1800,2200',
+          sizes: '100vw'
+      }}
+    </div>
+    <div class="ng-hero__overlay" style="opacity:{{ section.settings.overlay | divided_by: 100.0 }};background:{{ section.settings.overlay_color }};"></div>
+  {%- elsif section.settings.video != blank -%}
+    <div class="ng-hero__media">
+      {{
+        section.settings.video
+        | video_tag:
+          autoplay: true,
+          loop: true,
+          muted: true,
+          playsinline: true,
+          preload: 'metadata'
+      }}
+      <div class="ng-hero__overlay" style="opacity:{{ section.settings.overlay | divided_by: 100.0 }};background:{{ section.settings.overlay_color }};"></div>
+    </div>
+  {%- else -%}
+    <div class="ng-hero__media" style="background:{{ section.settings.bg_color }};"></div>
+  {%- endif -%}
+
+  <div class="ng-container" style="position:relative;z-index:2;display:flex;align-items:{% if section.settings.content_position == 'top' %}flex-start{% elsif section.settings.content_position == 'bottom' %}flex-end{% else %}center{% endif %};min-height:inherit;">
+    <div class="ng-hero__content" style="text-align:{{ section.settings.content_align }};max-width:{{ section.settings.content_width }}rem;" data-ng-reveal>
+      {%- if section.settings.eyebrow != blank -%}
+        <div class="ng-hero__eyebrow" data-ng-reveal data-ng-delay="1">{{ section.settings.eyebrow }}</div>
+      {%- endif -%}
+      {%- if section.settings.title != blank -%}
+        <h1 class="ng-hero__title" data-ng-reveal data-ng-delay="2">{{ section.settings.title }}</h1>
+      {%- endif -%}
+      {%- if section.settings.text != blank -%}
+        <div class="ng-hero__text" data-ng-reveal data-ng-delay="3">{{ section.settings.text }}</div>
+      {%- endif -%}
+      <div class="ng-hero__actions" style="justify-content:{% if section.settings.content_align == 'center' %}center{% elsif section.settings.content_align == 'right' %}flex-end{% else %}flex-start{% endif %};" data-ng-reveal data-ng-delay="4">
+        {%- if section.settings.btn1_label != blank -%}
+          <a href="{{ section.settings.btn1_url }}" class="ng-btn {% if section.settings.btn1_style == 'primary' %}ng-btn--primary{% elsif section.settings.btn1_style == 'ghost' %}ng-btn--ghost{% else %}ng-btn--dark{% endif %}">
+            {{ section.settings.btn1_label }}
+          </a>
+        {%- endif -%}
+        {%- if section.settings.btn2_label != blank -%}
+          <a href="{{ section.settings.btn2_url }}" class="ng-btn ng-btn--ghost">{{ section.settings.btn2_label }}</a>
+        {%- endif -%}
+      </div>
+    </div>
+  </div>
+  {%- if section.settings.show_scroll_indicator -%}
+    <div class="ng-hero__scroll" aria-hidden="true">
+      <div class="ng-hero__scroll-line"></div>
+    </div>
+  {%- endif -%}
+</section>
+
+{% schema %}
+{
+  "name": "Hero Banner",
+  "tag": "div",
+  "class": "ng-hero-section",
+  "settings": [
+    { "type": "header", "content": "Médias" },
+    { "type": "image_picker", "id": "image", "label": "Image de fond" },
+    { "type": "video", "id": "video", "label": "Vidéo de fond (remplace l'image)" },
+    { "type": "color", "id": "bg_color", "label": "Couleur de fond (si aucun média)", "default": "#003049" },
+    { "type": "range", "id": "overlay", "min": 0, "max": 90, "step": 5, "default": 45, "unit": "%", "label": "Opacité de l'overlay" },
+    { "type": "color", "id": "overlay_color", "label": "Couleur overlay", "default": "#000000" },
+    { "type": "header", "content": "Contenu" },
+    { "type": "text", "id": "eyebrow", "label": "Sous-titre (au-dessus du titre)" },
+    { "type": "inline_richtext", "id": "title", "label": "Titre principal", "default": "Performance <em>Next Level</em>" },
+    { "type": "textarea", "id": "text", "label": "Texte descriptif", "default": "Des produits conçus pour dépasser vos limites." },
+    { "type": "text", "id": "btn1_label", "label": "Bouton 1 — Label", "default": "Découvrir" },
+    { "type": "url", "id": "btn1_url", "label": "Bouton 1 — Lien" },
+    { "type": "select", "id": "btn1_style", "label": "Bouton 1 — Style", "options": [{"value":"primary","label":"Accent (rouge)"},{"value":"dark","label":"Sombre"},{"value":"ghost","label":"Contour blanc"}], "default": "primary" },
+    { "type": "text", "id": "btn2_label", "label": "Bouton 2 — Label (optionnel)" },
+    { "type": "url", "id": "btn2_url", "label": "Bouton 2 — Lien" },
+    { "type": "header", "content": "Layout" },
+    { "type": "select", "id": "content_position", "label": "Position verticale", "options": [{"value":"top","label":"Haut"},{"value":"center","label":"Centre"},{"value":"bottom","label":"Bas"}], "default": "center" },
+    { "type": "select", "id": "content_align", "label": "Alignement texte", "options": [{"value":"left","label":"Gauche"},{"value":"center","label":"Centre"},{"value":"right","label":"Droite"}], "default": "left" },
+    { "type": "range", "id": "content_width", "min": 40, "max": 100, "step": 4, "default": 72, "unit": "rem", "label": "Largeur max du contenu" },
+    { "type": "range", "id": "height_desktop", "min": 400, "max": 1000, "step": 40, "default": 720, "unit": "px", "label": "Hauteur minimale — bureau" },
+    { "type": "range", "id": "height_mobile", "min": 300, "max": 800, "step": 40, "default": 520, "unit": "px", "label": "Hauteur minimale — mobile" },
+    { "type": "checkbox", "id": "show_scroll_indicator", "label": "Afficher l'indicateur de scroll", "default": true }
+  ],
+  "presets": [{ "name": "Hero Banner" }]
+}
+{% endschema %}

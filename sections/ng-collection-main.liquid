@@ -1,0 +1,210 @@
+{%- style -%}
+  /* ── Header de collection ── */
+  .ng-col-header-{{ section.id }} {
+    padding-top:    {{ section.settings.header_padding_top_mobile }}px;
+    padding-bottom: {{ section.settings.header_padding_bottom_mobile }}px;
+    background:     {{ section.settings.header_bg_color }};
+  }
+  .ng-col-header-{{ section.id }} h1 {
+    color: {{ section.settings.header_text_color }};
+  }
+  .ng-col-header-{{ section.id }} p {
+    color: {{ section.settings.header_text_color }};
+    opacity: 0.72;
+  }
+
+  /* ── Zone produits ── */
+  .ng-col-content-{{ section.id }} {
+    padding-top:    {{ section.settings.padding_top_mobile }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    background:     {{ section.settings.bg_color }};
+  }
+
+  /* ── Grille ── */
+  .ng-col-grid-{{ section.id }} {
+    grid-template-columns: repeat({{ section.settings.columns_mobile }}, 1fr);
+    gap: {{ section.settings.grid_gap_mobile }}px;
+  }
+
+  @media (min-width: 990px) {
+    .ng-col-header-{{ section.id }} {
+      padding-top:    {{ section.settings.header_padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.header_padding_bottom_desktop }}px;
+    }
+    .ng-col-content-{{ section.id }} {
+      padding-top:    {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+    }
+    .ng-col-grid-{{ section.id }} {
+      grid-template-columns: repeat({{ section.settings.columns_desktop }}, 1fr);
+      gap: {{ section.settings.grid_gap_desktop }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- paginate collection.products by section.settings.products_per_page -%}
+
+<!-- ── Header de collection ── -->
+<div class="ng-collection-header ng-col-header-{{ section.id }}">
+  <div class="ng-container">
+    <h1>{{ collection.title }}</h1>
+    {%- if collection.description != blank -%}
+      <p>{{ collection.description }}</p>
+    {%- endif -%}
+  </div>
+</div>
+
+<!-- ── Zone produits ── -->
+<div class="ng-col-content-{{ section.id }}">
+  <div class="ng-container">
+    <!-- Filter / Sort bar -->
+    <div class="ng-filter-bar">
+      <p class="ng-filter-count">
+        {{ collection.products_count }}
+        {%- if collection.products_count == 1 %} produit{%- else %} produits{%- endif -%}
+      </p>
+      {%- if section.settings.show_sort -%}
+        {%- assign sort_by = collection.sort_by | default: collection.default_sort_by -%}
+        <select
+          class="ng-sort-select"
+          id="ng-sort"
+          aria-label="Trier par"
+          onchange="window.location.href = window.location.pathname + '?sort_by=' + this.value + '{{ paginate.page_param }}=' + '1'"
+        >
+          {%- for option in collection.sort_options -%}
+            <option value="{{ option.value }}" {% if option.value == sort_by %}selected{% endif %}>{{ option.name }}</option>
+          {%- endfor -%}
+        </select>
+      {%- endif -%}
+    </div>
+
+    <!-- Product grid -->
+    {%- if collection.products.size > 0 -%}
+      <div class="ng-product-grid ng-col-grid-{{ section.id }}" style="margin-top:3.2rem;">
+        {%- for product in collection.products -%}
+          {%- render 'ng-product-card', product: product, index: forloop.index0 -%}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="ng-cart-empty" style="padding-block:8rem;">
+        <p style="font-size:var(--ng-size-xl);color:var(--ng-text-muted);">Aucun produit dans cette collection.</p>
+        <a href="/collections/all" class="ng-btn ng-btn--primary">Voir tous les produits</a>
+      </div>
+    {%- endif -%}
+
+    {%- render 'ng-pagination', paginate: paginate -%}
+  </div>
+</div>
+
+{%- endpaginate -%}
+
+{% schema %}
+{
+  "name": "Page collection",
+  "tag": "div",
+  "settings": [
+    { "type": "header", "content": "Entête de collection — Bureau" },
+    {
+      "type": "color",
+      "id": "header_bg_color",
+      "label": "Fond de l'entête",
+      "default": "#003049"
+    },
+    {
+      "type": "color",
+      "id": "header_text_color",
+      "label": "Couleur du texte de l'entête",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "header_padding_top_desktop",
+      "min": 32, "max": 160, "step": 8, "default": 96,
+      "unit": "px", "label": "Padding supérieur entête (bureau)"
+    },
+    {
+      "type": "range",
+      "id": "header_padding_bottom_desktop",
+      "min": 32, "max": 160, "step": 8, "default": 96,
+      "unit": "px", "label": "Padding inférieur entête (bureau)"
+    },
+    { "type": "header", "content": "Entête de collection — Mobile" },
+    {
+      "type": "range",
+      "id": "header_padding_top_mobile",
+      "min": 24, "max": 100, "step": 8, "default": 56,
+      "unit": "px", "label": "Padding supérieur entête (mobile)"
+    },
+    {
+      "type": "range",
+      "id": "header_padding_bottom_mobile",
+      "min": 24, "max": 100, "step": 8, "default": 56,
+      "unit": "px", "label": "Padding inférieur entête (mobile)"
+    },
+    { "type": "header", "content": "Zone produits — Bureau" },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Fond de la zone produits",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 24, "max": 120, "step": 8, "default": 56,
+      "unit": "px", "label": "Padding supérieur zone produits (bureau)"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 24, "max": 120, "step": 8, "default": 80,
+      "unit": "px", "label": "Padding inférieur zone produits (bureau)"
+    },
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "min": 2, "max": 5, "step": 1, "default": 3,
+      "label": "Colonnes (bureau)"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap_desktop",
+      "min": 12, "max": 64, "step": 4, "default": 24,
+      "unit": "px", "label": "Gouttière grille (bureau)"
+    },
+    { "type": "header", "content": "Zone produits — Mobile" },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 16, "max": 80, "step": 8, "default": 32,
+      "unit": "px", "label": "Padding supérieur zone produits (mobile)"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 16, "max": 80, "step": 8, "default": 48,
+      "unit": "px", "label": "Padding inférieur zone produits (mobile)"
+    },
+    {
+      "type": "range",
+      "id": "columns_mobile",
+      "min": 1, "max": 3, "step": 1, "default": 2,
+      "label": "Colonnes (mobile)"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap_mobile",
+      "min": 8, "max": 32, "step": 4, "default": 16,
+      "unit": "px", "label": "Gouttière grille (mobile)"
+    },
+    { "type": "header", "content": "Options" },
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "min": 8, "max": 48, "step": 4, "default": 24,
+      "label": "Produits par page"
+    },
+    { "type": "checkbox", "id": "show_sort", "label": "Afficher le tri par", "default": true }
+  ]
+}
+{% endschema %}

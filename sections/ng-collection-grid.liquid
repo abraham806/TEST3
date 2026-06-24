@@ -1,0 +1,83 @@
+{%- liquid
+  assign cols = section.settings.columns | default: 3
+  assign limit = section.settings.products_count | default: 8
+  assign collection = section.settings.collection
+-%}
+{%- style -%}
+  .ng-colsec-{{ section.id }} { padding-block: {{ section.settings.padding_top_mobile }}px {{ section.settings.padding_bottom_mobile }}px; }
+  @media(min-width:990px) {
+    .ng-colsec-{{ section.id }} { padding-block: {{ section.settings.padding_top }}px {{ section.settings.padding_bottom }}px; }
+    .ng-colsec-{{ section.id }} .ng-product-grid { grid-template-columns: repeat({{ cols }}, 1fr); }
+  }
+{%- endstyle -%}
+
+<section class="ng-products-section ng-colsec-{{ section.id }}" style="background:{{ section.settings.bg_color }};">
+  <div class="ng-container">
+    {%- if section.settings.eyebrow != blank or section.settings.title != blank or section.settings.link_label != blank -%}
+      <div class="ng-section-header">
+        <div>
+          {%- if section.settings.eyebrow != blank -%}
+            <div class="ng-section-header__eyebrow">{{ section.settings.eyebrow }}</div>
+          {%- endif -%}
+          {%- if section.settings.title != blank -%}
+            <h2 class="ng-section-header__title" style="margin:0;">{{ section.settings.title }}</h2>
+          {%- endif -%}
+        </div>
+        {%- if section.settings.link_label != blank and section.settings.link_url != blank -%}
+          <a href="{{ section.settings.link_url }}" class="ng-btn ng-btn--secondary ng-btn--sm">
+            {{ section.settings.link_label }} &rarr;
+          </a>
+        {%- elsif collection != blank and section.settings.link_label != blank -%}
+          <a href="{{ collection.url }}" class="ng-btn ng-btn--secondary ng-btn--sm">{{ section.settings.link_label }}</a>
+        {%- endif -%}
+      </div>
+    {%- endif -%}
+
+    {%- if collection != blank and collection.products_count > 0 -%}
+      <div class="ng-product-grid">
+        {%- for product in collection.products limit: limit -%}
+          {%- render 'ng-product-card', product: product, index: forloop.index0 -%}
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <!-- Placeholder preview mode -->
+      <div class="ng-product-grid">
+        {%- for i in (1..limit) -%}
+          <div class="ng-product-card" style="opacity:.4;">
+            <div class="ng-product-card__img" style="background:var(--ng-bg-2);aspect-ratio:4/5;"></div>
+            <div class="ng-product-card__info">
+              <div style="height:1.4rem;background:var(--ng-border);border-radius:4px;margin-bottom:.8rem;width:70%;"></div>
+              <div style="height:1.2rem;background:var(--ng-border);border-radius:4px;width:40%;"></div>
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Grille de produits",
+  "tag": "div",
+  "settings": [
+    { "type": "collection", "id": "collection", "label": "Collection à afficher" },
+    { "type": "range", "id": "products_count", "min": 2, "max": 24, "step": 2, "default": 8, "label": "Nombre de produits" },
+    { "type": "range", "id": "columns", "min": 2, "max": 5, "step": 1, "default": 3, "label": "Colonnes (bureau)" },
+    { "type": "header", "content": "Entête de section" },
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Nos produits" },
+    { "type": "text", "id": "link_label", "label": "Label bouton 'Voir tout'", "default": "Voir tout" },
+    { "type": "url", "id": "link_url", "label": "Lien (si différent de la collection)" },
+    { "type": "header", "content": "Apparence" },
+    { "type": "color", "id": "bg_color", "label": "Couleur de fond", "default": "#FFFFFF" },
+    { "type": "header", "content": "Espacements — Bureau" },
+    { "type": "range", "id": "padding_top", "min": 40, "max": 160, "step": 8, "default": 96, "unit": "px", "label": "Padding supérieur (bureau)" },
+    { "type": "range", "id": "padding_bottom", "min": 40, "max": 160, "step": 8, "default": 96, "unit": "px", "label": "Padding inférieur (bureau)" },
+    { "type": "header", "content": "Espacements — Mobile" },
+    { "type": "range", "id": "padding_top_mobile", "min": 32, "max": 100, "step": 8, "default": 56, "unit": "px", "label": "Padding supérieur (mobile)" },
+    { "type": "range", "id": "padding_bottom_mobile", "min": 32, "max": 100, "step": 8, "default": 56, "unit": "px", "label": "Padding inférieur (mobile)" }
+  ],
+  "presets": [{ "name": "Grille de produits" }]
+}
+{% endschema %}

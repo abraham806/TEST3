@@ -1,0 +1,28 @@
+{
+  "sections": {
+    "main": {
+      "type": "ng-cart",
+      "settings": {
+        "heading": "Mon panier",
+        "remove_label": "Supprimer",
+        "continue_label": "Continuer mes achats",
+        "summary_title": "Récapitulatif",
+        "subtotal_label": "Sous-total",
+        "shipping_note": "Taxes et livraison calculées à la commande.",
+        "checkout_label": "Commander",
+        "empty_title": "Votre panier est vide",
+        "empty_text": "Ajoutez des articles pour commencer.",
+        "empty_cta_label": "Découvrir nos produits",
+        "max_width": 120,
+        "summary_width": 40,
+        "grid_gap": 5,
+        "bg_color": "#FFFFFF",
+        "padding_top_desktop": 64,
+        "padding_bottom_desktop": 80,
+        "padding_top_mobile": 40,
+        "padding_bottom_mobile": 56
+      }
+    }
+  },
+  "order": ["main"]
+}

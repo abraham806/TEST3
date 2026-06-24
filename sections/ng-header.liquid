@@ -1,0 +1,302 @@
+{%- liquid
+  assign cart_icon = settings.cart_icon | default: 'bag'
+  assign logo_text = settings.logo_text | default: shop.name
+-%}
+
+{%- style -%}
+  /* ── Hauteur header : contrôle depuis l'Éditeur de thème ── */
+  .ng-header-{{ section.id }} {
+    height: {{ section.settings.header_height_mobile }}px;
+  }
+  .ng-header-wrap-{{ section.id }} .ng-header__logo img {
+    max-width: {{ settings.logo_width_mobile }}px;
+  }
+  @media (min-width: 990px) {
+    .ng-header-{{ section.id }} {
+      height: {{ section.settings.header_height_desktop }}px;
+    }
+    .ng-header-wrap-{{ section.id }} .ng-header__logo img {
+      max-width: {{ settings.logo_width }}px;
+    }
+  }
+{%- endstyle -%}
+
+{%- if settings.announce_enabled and section.settings.show_announce -%}
+  <div
+    class="ng-announce"
+    style="background:{{ section.settings.announce_bg_color }};color:{{ section.settings.announce_text_color }};"
+  >
+    <div class="ng-container">{{ settings.announce_text }}</div>
+  </div>
+{%- endif -%}
+
+<div class="ng-header-wrap ng-header-wrap-{{ section.id }}">
+  <div class="ng-container">
+    <header class="ng-header ng-header-{{ section.id }}" role="banner">
+
+      <!-- ── Logo ── -->
+      <div class="ng-header__logo">
+        <a href="/" aria-label="{{ shop.name }}" style="display:flex;align-items:center;">
+          {%- if settings.logo != blank -%}
+            {{
+              settings.logo
+              | image_url: width: 400
+              | image_tag:
+                alt: shop.name,
+                loading: 'eager',
+                fetchpriority: 'high',
+                style: 'max-width:' | append: settings.logo_width | append: 'px;'
+            }}
+          {%- else -%}
+            <span class="ng-header__logo-text">{{ logo_text }}</span>
+          {%- endif -%}
+        </a>
+      </div>
+
+      <!-- ── Navigation desktop ── -->
+      <nav class="ng-header__nav" aria-label="Navigation principale">
+        <ul class="ng-nav__list" role="list">
+          {%- for link in linklists[settings.main_menu].links -%}
+            <li class="ng-nav__item{% if link.links.size > 0 %} ng-nav__item--has-sub{% endif %}">
+              <a
+                href="{{ link.url }}"
+                class="ng-nav__link{% if link.active %} is-active{% endif %}"
+                {% if link.links.size > 0 %}aria-haspopup="true" aria-expanded="false"{% endif %}
+              >
+                {{ link.title }}
+                {%- if link.links.size > 0 -%}
+                  {%- render 'ng-icon', icon: 'chevron-down', size: 12 -%}
+                {%- endif -%}
+              </a>
+              {%- if link.links.size > 0 -%}
+                <div class="ng-nav__dropdown" role="menu">
+                  {%- for sub in link.links -%}
+                    <a href="{{ sub.url }}" class="ng-nav__dropdown-link" role="menuitem">{{ sub.title }}</a>
+                  {%- endfor -%}
+                </div>
+              {%- endif -%}
+            </li>
+          {%- endfor -%}
+        </ul>
+      </nav>
+
+      <!-- ── Icônes d'actions ── -->
+      <div class="ng-header__actions">
+        {%- if settings.show_search -%}
+          <button
+            class="ng-icon-btn"
+            data-ng-search-open
+            aria-label="Ouvrir la recherche"
+            aria-expanded="false"
+          >
+            {%- render 'ng-icon', icon: 'search' -%}
+          </button>
+        {%- endif -%}
+
+        {%- if settings.show_account -%}
+          <a
+            href="{%- if customer -%}/account{%- else -%}/account/login{%- endif -%}"
+            class="ng-icon-btn"
+            aria-label="Mon compte"
+          >
+            {%- render 'ng-icon', icon: 'user' -%}
+          </a>
+        {%- endif -%}
+
+        <button
+          class="ng-icon-btn"
+          data-ng-cart-open
+          aria-label="Ouvrir le panier — {{ cart.item_count }} articles"
+          style="position:relative;"
+        >
+          {%- render 'ng-icon', icon: cart_icon -%}
+          <span
+            class="ng-cart-badge{% if cart.item_count == 0 %} ng-hidden{% endif %}"
+            aria-hidden="true"
+          >
+            <span class="ng-cart-count-val">{{ cart.item_count }}</span>
+          </span>
+        </button>
+
+        <button
+          id="ng-burger"
+          class="ng-burger"
+          aria-label="Ouvrir le menu"
+          aria-expanded="false"
+          aria-controls="ng-mobile-nav"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </header>
+  </div>
+</div>
+
+<!-- ── Menu mobile ── -->
+<div
+  id="ng-mobile-nav"
+  class="ng-mobile-nav"
+  role="dialog"
+  aria-label="Menu de navigation mobile"
+  aria-hidden="true"
+>
+  <div class="ng-mobile-nav__overlay" aria-hidden="true"></div>
+  <div class="ng-mobile-nav__panel">
+    <div class="ng-mobile-nav__header">
+      {%- if settings.logo != blank -%}
+        {{
+          settings.logo
+          | image_url: width: 200
+          | image_tag:
+            alt: shop.name,
+            loading: 'lazy',
+            style: 'max-width:' | append: settings.logo_width_mobile | append: 'px;'
+        }}
+      {%- else -%}
+        <span class="ng-header__logo-text" style="color:var(--ng-primary);">{{ logo_text }}</span>
+      {%- endif -%}
+      <button id="ng-mobile-nav-close" class="ng-icon-btn" aria-label="Fermer le menu">
+        {%- render 'ng-icon', icon: 'close' -%}
+      </button>
+    </div>
+
+    <nav class="ng-mobile-nav__body" aria-label="Menu mobile">
+      {%- for link in linklists[settings.main_menu].links -%}
+        {%- if link.links.size > 0 -%}
+          <div class="ng-mobile-nav__has-sub">
+            <div class="ng-mobile-nav__link" style="cursor:default;">
+              <a href="{{ link.url }}" style="flex:1;color:inherit;">{{ link.title }}</a>
+              <button class="ng-mobile-nav__toggle ng-icon-btn" aria-label="Voir les sous-liens de {{ link.title }}">
+                {%- render 'ng-icon', icon: 'chevron-down', size: 18 -%}
+              </button>
+            </div>
+            <div class="ng-mobile-nav__sub">
+              {%- for sub in link.links -%}
+                <a href="{{ sub.url }}" class="ng-mobile-nav__sub-link">{{ sub.title }}</a>
+              {%- endfor -%}
+            </div>
+          </div>
+        {%- else -%}
+          <a href="{{ link.url }}" class="ng-mobile-nav__link">{{ link.title }}</a>
+        {%- endif -%}
+      {%- endfor -%}
+    </nav>
+
+    <div class="ng-mobile-nav__footer">
+      {%- if settings.show_search -%}
+        <form action="/search" method="get" style="margin-bottom:var(--ng-s5);">
+          <input type="hidden" name="type" value="product">
+          <div style="display:flex;border:1.5px solid var(--ng-border);border-radius:var(--ng-r-sm);overflow:hidden;">
+            <input
+              type="search"
+              name="q"
+              placeholder="Rechercher…"
+              aria-label="Rechercher"
+              style="flex:1;padding:1.2rem;border:none;font-size:1.4rem;color:var(--ng-primary);background:var(--ng-bg);"
+            >
+            <button
+              type="submit"
+              style="padding:0 1.6rem;background:var(--ng-primary);color:var(--ng-bg);border:none;cursor:pointer;"
+              aria-label="Lancer la recherche"
+            >
+              {%- render 'ng-icon', icon: 'search', size: 18 -%}
+            </button>
+          </div>
+        </form>
+      {%- endif -%}
+
+      <!-- Liens sociaux -->
+      {%- liquid
+        assign has_social = false
+        if settings.social_instagram != blank or settings.social_tiktok != blank or settings.social_facebook != blank
+          assign has_social = true
+        endif
+      -%}
+      {%- if has_social -%}
+        <div style="display:flex;gap:var(--ng-s2);flex-wrap:wrap;">
+          {%- if settings.social_instagram != blank -%}
+            <a href="{{ settings.social_instagram }}" target="_blank" rel="noopener" class="ng-icon-btn" aria-label="Instagram" style="border:1.5px solid var(--ng-border);border-radius:var(--ng-r-sm);">{%- render 'ng-icon', icon: 'instagram', size: 18 -%}</a>
+          {%- endif -%}
+          {%- if settings.social_tiktok != blank -%}
+            <a href="{{ settings.social_tiktok }}" target="_blank" rel="noopener" class="ng-icon-btn" aria-label="TikTok" style="border:1.5px solid var(--ng-border);border-radius:var(--ng-r-sm);">{%- render 'ng-icon', icon: 'tiktok', size: 18 -%}</a>
+          {%- endif -%}
+          {%- if settings.social_facebook != blank -%}
+            <a href="{{ settings.social_facebook }}" target="_blank" rel="noopener" class="ng-icon-btn" aria-label="Facebook" style="border:1.5px solid var(--ng-border);border-radius:var(--ng-r-sm);">{%- render 'ng-icon', icon: 'facebook', size: 18 -%}</a>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Header",
+  "class": "ng-header-section",
+  "limit": 1,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Hauteur — Bureau"
+    },
+    {
+      "type": "range",
+      "id": "header_height_desktop",
+      "min": 56,
+      "max": 120,
+      "step": 4,
+      "default": 72,
+      "unit": "px",
+      "label": "Hauteur du header (bureau)"
+    },
+    {
+      "type": "header",
+      "content": "Hauteur — Mobile"
+    },
+    {
+      "type": "range",
+      "id": "header_height_mobile",
+      "min": 48,
+      "max": 96,
+      "step": 4,
+      "default": 64,
+      "unit": "px",
+      "label": "Hauteur du header (mobile)"
+    },
+    {
+      "type": "header",
+      "content": "Barre d'annonce"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_announce",
+      "label": "Afficher la barre d'annonce",
+      "default": true
+    },
+    {
+      "type": "color",
+      "id": "announce_bg_color",
+      "label": "Couleur de fond de l'annonce",
+      "default": "#003049"
+    },
+    {
+      "type": "color",
+      "id": "announce_text_color",
+      "label": "Couleur du texte de l'annonce",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "checkbox",
+      "id": "highlight_active",
+      "label": "Souligner le lien actif",
+      "default": true
+    }
+  ]
+}
+{% endschema %}

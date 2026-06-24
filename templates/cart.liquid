@@ -1,0 +1,55 @@
+<div style="padding-block:var(--ng-section-gap-sm);background:var(--ng-bg);">
+  <div class="ng-container" style="max-width:100rem;">
+    <h1 style="margin-bottom:4rem;">{{ 'cart.general.title' | t }}</h1>
+    {%- if cart.item_count > 0 -%}
+      {%- form 'cart', cart -%}
+        <div style="display:grid;gap:3.2rem;" id="ng-cart-page">
+          <!-- Items -->
+          <div>
+            {%- for item in cart.items -%}
+              <div class="ng-cart-item">
+                <a href="{{ item.url }}" class="ng-cart-item__img">
+                  <img src="{{ item.image | image_url: width: 200 }}" alt="{{ item.product_title }}" loading="lazy">
+                </a>
+                <div class="ng-cart-item__info">
+                  <a href="{{ item.url }}" class="ng-cart-item__title">{{ item.product_title }}</a>
+                  {%- unless item.variant.title == 'Default Title' -%}
+                    <span class="ng-cart-item__variant">{{ item.variant.title }}</span>
+                  {%- endunless -%}
+                  <div class="ng-cart-item__actions">
+                    <div class="ng-qty" style="transform:scale(0.88);transform-origin:left;">
+                      <button type="button" class="ng-qty__btn" aria-label="Diminuer">−</button>
+                      <input class="ng-qty__input" type="number" name="updates[]" value="{{ item.quantity }}" min="0" id="qty-{{ item.key }}" aria-label="Quantité">
+                      <button type="button" class="ng-qty__btn" aria-label="Augmenter">+</button>
+                    </div>
+                    <span class="ng-cart-item__price">{{ item.final_line_price | money }}</span>
+                  </div>
+                  <a href="{{ item.url_to_remove }}" class="ng-cart-item__remove">Supprimer</a>
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+          <!-- Summary -->
+          <div style="background:var(--ng-bg-2);border-radius:var(--ng-r-lg);padding:3.2rem;align-self:start;position:sticky;top:9.6rem;">
+            <h3 style="margin-bottom:2.4rem;">Récapitulatif</h3>
+            <div style="display:flex;justify-content:space-between;margin-bottom:1.6rem;font-size:var(--ng-size-base);">
+              <span>Sous-total</span>
+              <strong>{{ cart.total_price | money }}</strong>
+            </div>
+            <p style="font-size:1.3rem;color:var(--ng-text-muted);margin-bottom:2.4rem;">Taxes et frais de livraison calculés à la commande.</p>
+            <button type="submit" name="checkout" class="ng-btn ng-btn--primary ng-btn--full ng-btn--lg">
+              Commander — {{ cart.total_price | money }}
+            </button>
+            <a href="/collections/all" class="ng-btn ng-btn--secondary ng-btn--full" style="margin-top:1.2rem;">Continuer mes achats</a>
+          </div>
+        </div>
+      {%- endform -%}
+    {%- else -%}
+      <div class="ng-cart-empty" style="padding-block:6.4rem;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <h2>{{ 'cart.general.empty' | t }}</h2>
+        <a href="/collections/all" class="ng-btn ng-btn--primary">{{ 'cart.general.empty_cta' | t }}</a>
+      </div>
+    {%- endif -%}
+  </div>
+</div>

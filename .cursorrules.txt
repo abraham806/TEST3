@@ -1,0 +1,14 @@
+# Instructions Système Obligatoires pour les Modifications de Fichiers
+
+Vous êtes un développeur expert Shopify Liquid chargé d'assister le propriétaire de la boutique. Le marchand exige une flexibilité absolue dans son éditeur de thème.
+
+## DIRECTIVE OBLIGATOIRE
+Avant de proposer, d'écrire ou de modifier le MOINDRE code pour cette boutique Shopify, vous devez SYSTÉMATIQUEMENT analyser et respecter scrupuleusement les directives définies dans le fichier de référence à la racine : `instructions-developpement-shopify.md`.
+
+## RÈGLES CRITIQUES POUR TOUTE MODIFICATION :
+1. **ABSOLUMENT AUCUN CODE EN DUR (HARDCODING) :** Il vous est strictement interdit d'écrire des textes fixes, des dimensions figées (hauteurs/largeurs fixes en px), des couleurs statiques ou des configurations de mise en page immuables dans les snippets, templates ou sections.
+2. **PARITÉ AVEC L'ÉDITEUR DE THÈME :** Chaque ajustement de mise en page, palette de couleurs, marge ou visibilité d'élément doit être entièrement configurable par l'utilisateur depuis l'Éditeur de thème Shopify via les déclarations de schéma (`{% schema %}`).
+3. **ENCAPSULATION DES STYLES :** Ciblez toujours vos styles CSS localement en utilisant l'ID de la section (`{{ section.id }}`) pour éviter que les styles ne bavent ou n'écrasent d'autres composants de la boutique.
+4. **INDÉPENDANCE DU MARCHAND :** Écrivez tout le code Liquid et les configurations JSON sous l'hypothèse qu'un gestionnaire non technique devra dupliquer, réordonner, modifier ou recolorer les composants sans toucher au code.
+
+Si une demande de modification manque de précisions sur les dimensions, le texte ou les couleurs, vous DEVEZ intégrer automatiquement des nœuds interactifs `range`, `color`, `text` ou `select` dans le schéma Liquid correspondant. Ne générez aucun code sans ces options.

@@ -1,0 +1,63 @@
+{%- style -%}
+  .ng-nls-{{ section.id }} { padding-block: {{ section.settings.padding_top_mobile }}px {{ section.settings.padding_bottom_mobile }}px; }
+  @media(min-width:990px){
+    .ng-nls-{{ section.id }} { padding-block: {{ section.settings.padding_top }}px {{ section.settings.padding_bottom }}px; }
+  }
+{%- endstyle -%}
+
+<section class="ng-newsletter ng-nls-{{ section.id }}" style="background:{{ section.settings.bg_color }};color:{{ section.settings.text_color }};">
+  <div class="ng-container" style="max-width:72rem;">
+    {%- if section.settings.eyebrow != blank -%}
+      <div class="ng-section-header__eyebrow" style="justify-content:center;color:{{ section.settings.accent_color }};margin-bottom:1.6rem;">{{ section.settings.eyebrow }}</div>
+    {%- endif -%}
+    <h2 style="color:{{ section.settings.text_color }};" data-ng-reveal>{{ section.settings.title }}</h2>
+    <p style="color:{{ section.settings.text_color }};opacity:.75;" data-ng-reveal data-ng-delay="1">{{ section.settings.text }}</p>
+
+    {%- form 'customer', id: 'ng-newsletter-{{ section.id }}', data-ng-reveal: '', data-ng-delay: '2' -%}
+      <input type="hidden" name="contact[tags]" value="newsletter">
+      {%- if form.posted_successfully? -%}
+        <p class="ng-newsletter__success">✓ {{ section.settings.success_msg }}</p>
+      {%- elsif form.errors -%}
+        <p style="color:#ff6b6b;font-size:1.3rem;margin-bottom:1.6rem;">{{ form.errors.translated_fields['email'] | capitalize }} {{ form.errors.messages['email'] }}</p>
+        <div class="ng-newsletter-form">
+          <input type="email" name="contact[email]" placeholder="{{ section.settings.placeholder }}" value="{{ form.value }}" required autocomplete="email">
+          <button type="submit" class="ng-btn ng-btn--primary">{{ section.settings.btn_label }}</button>
+        </div>
+      {%- else -%}
+        <div class="ng-newsletter-form">
+          <input type="email" name="contact[email]" placeholder="{{ section.settings.placeholder }}" required autocomplete="email" aria-label="{{ section.settings.placeholder }}">
+          <button type="submit" class="ng-btn ng-btn--primary">{{ section.settings.btn_label }}</button>
+        </div>
+      {%- endif -%}
+    {%- endform -%}
+    {%- if section.settings.disclaimer != blank -%}
+      <p style="font-size:1.1rem;color:{{ section.settings.text_color }};opacity:.45;margin-top:1.6rem;">{{ section.settings.disclaimer }}</p>
+    {%- endif -%}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Rejoignez la communauté" },
+    { "type": "text", "id": "text", "label": "Sous-titre", "default": "Soyez les premiers informés de nos offres et nouveautés exclusives." },
+    { "type": "text", "id": "placeholder", "label": "Placeholder email", "default": "votre@email.com" },
+    { "type": "text", "id": "btn_label", "label": "Label bouton", "default": "S'inscrire" },
+    { "type": "text", "id": "success_msg", "label": "Message de confirmation", "default": "Merci pour votre inscription !" },
+    { "type": "text", "id": "disclaimer", "label": "Mention légale (optionnel)" },
+    { "type": "header", "content": "Couleurs" },
+    { "type": "color", "id": "bg_color", "label": "Fond", "default": "#003049" },
+    { "type": "color", "id": "text_color", "label": "Texte", "default": "#FFFFFF" },
+    { "type": "color", "id": "accent_color", "label": "Sur-titre accent", "default": "#F77F00" },
+    { "type": "header", "content": "Espacements" },
+    { "type": "range", "id": "padding_top", "min": 48, "max": 160, "step": 8, "default": 96, "unit": "px", "label": "Haut (bureau)" },
+    { "type": "range", "id": "padding_bottom", "min": 48, "max": 160, "step": 8, "default": 96, "unit": "px", "label": "Bas (bureau)" },
+    { "type": "range", "id": "padding_top_mobile", "min": 48, "max": 100, "step": 8, "default": 64, "unit": "px", "label": "Haut (mobile)" },
+    { "type": "range", "id": "padding_bottom_mobile", "min": 48, "max": 100, "step": 8, "default": 64, "unit": "px", "label": "Bas (mobile)" }
+  ],
+  "presets": [{ "name": "Newsletter" }]
+}
+{% endschema %}

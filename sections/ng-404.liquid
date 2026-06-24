@@ -1,0 +1,132 @@
+{%- style -%}
+  .ng-404-{{ section.id }} {
+    padding-top:    {{ section.settings.padding_top_mobile }}px;
+    padding-bottom: {{ section.settings.padding_bottom_mobile }}px;
+    background:     {{ section.settings.bg_color }};
+  }
+  @media (min-width: 990px) {
+    .ng-404-{{ section.id }} {
+      padding-top:    {{ section.settings.padding_top_desktop }}px;
+      padding-bottom: {{ section.settings.padding_bottom_desktop }}px;
+    }
+  }
+{%- endstyle -%}
+
+<div class="ng-404 ng-404-{{ section.id }}">
+  <div class="ng-container" style="text-align:center;">
+    <div class="ng-404__number" aria-hidden="true">{{ section.settings.error_number }}</div>
+    <h1>{{ section.settings.title }}</h1>
+    <p>{{ section.settings.text }}</p>
+    <div style="display:flex;gap:1.6rem;justify-content:center;flex-wrap:wrap;">
+      {%- if section.settings.btn1_label != blank -%}
+        <a href="{{ section.settings.btn1_url | default: '/' }}" class="ng-btn ng-btn--primary">
+          {{ section.settings.btn1_label }}
+        </a>
+      {%- endif -%}
+      {%- if section.settings.btn2_label != blank -%}
+        <a href="{{ section.settings.btn2_url | default: '/collections/all' }}" class="ng-btn ng-btn--secondary">
+          {{ section.settings.btn2_label }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Page 404",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "error_number",
+      "label": "Numéro d'erreur affiché",
+      "default": "404"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titre",
+      "default": "Page introuvable"
+    },
+    {
+      "type": "text",
+      "id": "text",
+      "label": "Texte descriptif",
+      "default": "La page que vous cherchez n'existe pas ou a été déplacée."
+    },
+    {
+      "type": "header",
+      "content": "Bouton 1"
+    },
+    {
+      "type": "text",
+      "id": "btn1_label",
+      "label": "Label",
+      "default": "Retour à l'accueil"
+    },
+    {
+      "type": "url",
+      "id": "btn1_url",
+      "label": "Lien"
+    },
+    {
+      "type": "header",
+      "content": "Bouton 2"
+    },
+    {
+      "type": "text",
+      "id": "btn2_label",
+      "label": "Label",
+      "default": "Voir nos produits"
+    },
+    {
+      "type": "url",
+      "id": "btn2_url",
+      "label": "Lien"
+    },
+    {
+      "type": "header",
+      "content": "Apparence"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Couleur de fond",
+      "default": "#FFFFFF"
+    },
+    {
+      "type": "header",
+      "content": "Espacements — Bureau"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_desktop",
+      "min": 60, "max": 200, "step": 8, "default": 120,
+      "unit": "px", "label": "Padding supérieur (bureau)"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_desktop",
+      "min": 60, "max": 200, "step": 8, "default": 120,
+      "unit": "px", "label": "Padding inférieur (bureau)"
+    },
+    {
+      "type": "header",
+      "content": "Espacements — Mobile"
+    },
+    {
+      "type": "range",
+      "id": "padding_top_mobile",
+      "min": 40, "max": 120, "step": 8, "default": 80,
+      "unit": "px", "label": "Padding supérieur (mobile)"
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom_mobile",
+      "min": 40, "max": 120, "step": 8, "default": 80,
+      "unit": "px", "label": "Padding inférieur (mobile)"
+    }
+  ]
+}
+{% endschema %}

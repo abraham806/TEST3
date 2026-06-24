@@ -1,0 +1,20 @@
+{
+  "sections": {
+    "main": {
+      "type": "ng-404",
+      "settings": {
+        "error_number": "404",
+        "title": "Page introuvable",
+        "text": "La page que vous cherchez n'existe pas ou a été déplacée.",
+        "btn1_label": "Retour à l'accueil",
+        "btn2_label": "Voir nos produits",
+        "bg_color": "#FFFFFF",
+        "padding_top_desktop": 120,
+        "padding_bottom_desktop": 120,
+        "padding_top_mobile": 80,
+        "padding_bottom_mobile": 80
+      }
+    }
+  },
+  "order": ["main"]
+}

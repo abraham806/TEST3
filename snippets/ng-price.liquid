@@ -1,0 +1,20 @@
+{%- liquid
+  assign target = product | default: variant
+  if target == nil
+    assign target = product
+  endif
+  assign compare = target.compare_at_price
+  assign price   = target.price
+  assign on_sale = false
+  if compare > price
+    assign on_sale = true
+  endif
+-%}
+{%- if on_sale -%}
+  <span class="ng-price ng-price--sale">{{ price | money }}</span>
+  <span class="ng-price--compare">{{ compare | money }}</span>
+{%- elsif target.price_varies -%}
+  <span class="ng-price">{{ 'products.general.from_text' | t }} {{ target.price_min | money }}</span>
+{%- else -%}
+  <span class="ng-price">{{ price | money }}</span>
+{%- endif -%}

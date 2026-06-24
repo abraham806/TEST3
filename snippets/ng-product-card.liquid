@@ -1,0 +1,82 @@
+{%- liquid
+  assign show_quick_add = show_quick_add | default: settings.card_quick_add
+  assign show_vendor     = show_vendor | default: settings.card_show_vendor
+  assign lazy            = lazy | default: true
+  assign loading         = lazy | unless lazy: 'eager' | endunless
+  if index and index < 3
+    assign loading = 'eager'
+  endif
+  assign has_sale = false
+  if product.compare_at_price > product.price
+    assign has_sale = true
+  endif
+  assign is_sold_out = true
+  if product.available
+    assign is_sold_out = false
+  endif
+-%}
+<div class="ng-product-card" data-ng-reveal data-ng-delay="{{ index | modulo: 6 | plus: 1 }}">
+  <a href="{{ product.url }}" class="ng-product-card__img" aria-label="{{ product.title | escape }}">
+    {%- if product.featured_image != blank -%}
+      {{
+        product.featured_image
+        | image_url: width: 800
+        | image_tag:
+          loading: loading,
+          widths: '400,600,800',
+          sizes: '(min-width:990px) 25vw, (min-width:640px) 50vw, 50vw',
+          alt: product.featured_image.alt | escape
+      }}
+      {%- if product.images[1] != blank -%}
+        <div class="ng-product-card__img-alt">
+          {{
+            product.images[1]
+            | image_url: width: 800
+            | image_tag:
+              loading: 'lazy',
+              widths: '400,600,800',
+              alt: product.images[1].alt | escape
+          }}
+        </div>
+      {%- endif -%}
+    {%- else -%}
+      <div style="width:100%;height:100%;background:var(--ng-bg-2);display:flex;align-items:center;justify-content:center;color:var(--ng-border);">
+        {%- render 'ng-icon', icon: 'bag', size: 48 -%}
+      </div>
+    {%- endif -%}
+
+    <div class="ng-product-card__badges">
+      {%- if is_sold_out -%}
+        <span class="ng-badge ng-badge--soldout">Épuisé</span>
+      {%- elsif has_sale -%}
+        {%- assign discount = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
+        <span class="ng-badge ng-badge--sale">-{{ discount }}%</span>
+      {%- endif -%}
+      {%- if product.tags contains 'new' or product.tags contains 'nouveau' -%}
+        <span class="ng-badge ng-badge--new">Nouveau</span>
+      {%- endif -%}
+    </div>
+
+    {%- if show_quick_add and is_sold_out == false -%}
+      <div class="ng-product-card__quick-add">
+        <button
+          class="ng-btn ng-btn--primary ng-btn--full"
+          data-ng-quick-add="{{ product.variants.first.id }}"
+          aria-label="Ajouter {{ product.title | escape }} au panier"
+        >
+          Ajout rapide
+        </button>
+      </div>
+    {%- endif -%}
+  </a>
+
+  <div class="ng-product-card__info">
+    {%- if show_vendor and product.vendor != blank -%}
+      <span class="ng-product-card__vendor">{{ product.vendor }}</span>
+    {%- endif -%}
+    <a href="{{ product.url }}" class="ng-product-card__title">{{ product.title }}</a>
+    <div class="ng-product-card__price">
+      {%- render 'ng-price', product: product -%}
+    </div>
+  </div>
+</div>

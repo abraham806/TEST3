@@ -1,0 +1,88 @@
+{
+  "sections": {
+    "ng-hero": {
+      "type": "ng-hero",
+      "settings": {
+        "title": "Performance <em>Next Level</em>",
+        "eyebrow": "Nouvelle collection",
+        "text": "Des produits conçus pour dépasser vos limites.",
+        "btn1_label": "Découvrir",
+        "btn1_url": "/collections/all",
+        "btn1_style": "primary",
+        "btn2_label": "Notre histoire",
+        "btn2_url": "/pages/about",
+        "height_desktop": 760,
+        "height_mobile": 560,
+        "overlay": 45,
+        "content_align": "left"
+      }
+    },
+    "ng-collection-1": {
+      "type": "ng-collection-grid",
+      "settings": {
+        "eyebrow": "Bestsellers",
+        "title": "Nos produits phares",
+        "link_label": "Voir tout",
+        "columns": 4,
+        "products_count": 8,
+        "padding_top": 96,
+        "padding_bottom": 80,
+        "padding_top_mobile": 56,
+        "padding_bottom_mobile": 48
+      }
+    },
+    "ng-split-1": {
+      "type": "ng-image-text",
+      "settings": {
+        "layout": "image_left",
+        "eyebrow": "Notre ADN",
+        "title": "Conçu pour la performance",
+        "text": "<p>Chaque produit est conçu avec une attention méticuleuse aux détails pour vous offrir le meilleur de la performance.</p>",
+        "btn_label": "En savoir plus",
+        "btn_url": "/pages/about",
+        "content_dark": false,
+        "bg_color": "#F5F4F0"
+      }
+    },
+    "ng-testimonials": {
+      "type": "ng-testimonials",
+      "settings": {
+        "eyebrow": "Avis clients",
+        "title": "Ils nous font confiance",
+        "bg_color": "#FFFFFF"
+      },
+      "blocks": {
+        "t1": { "type": "testimonial", "settings": { "rating": 5, "text": "Qualité exceptionnelle, je suis conquis dès la première utilisation.", "name": "Thomas R.", "role": "Client vérifié" } },
+        "t2": { "type": "testimonial", "settings": { "rating": 5, "text": "Livraison ultra-rapide et produit parfait. Je recommande à 100%.", "name": "Camille L.", "role": "Cliente vérifiée" } },
+        "t3": { "type": "testimonial", "settings": { "rating": 5, "text": "Le rapport qualité-prix est imbattable. Devenus mes préférés.", "name": "Alex M.", "role": "Client vérifié" } }
+      },
+      "block_order": ["t1", "t2", "t3"]
+    },
+    "ng-collection-2": {
+      "type": "ng-collection-grid",
+      "settings": {
+        "eyebrow": "Découvrir",
+        "title": "Nouvelles arrivées",
+        "link_label": "Voir la collection →",
+        "columns": 3,
+        "products_count": 6,
+        "bg_color": "#F5F4F0",
+        "padding_top": 96,
+        "padding_bottom": 96,
+        "padding_top_mobile": 56,
+        "padding_bottom_mobile": 56
+      }
+    },
+    "ng-newsletter": {
+      "type": "ng-newsletter",
+      "settings": {
+        "eyebrow": "Communauté",
+        "title": "Rejoignez la communauté",
+        "text": "Soyez les premiers informés de nos offres et nouveautés exclusives.",
+        "btn_label": "S'inscrire",
+        "bg_color": "#003049"
+      }
+    }
+  },
+  "order": ["ng-hero", "ng-collection-1", "ng-split-1", "ng-testimonials", "ng-collection-2", "ng-newsletter"]
+}

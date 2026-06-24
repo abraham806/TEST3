@@ -1,0 +1,52 @@
+{%- style -%}
+  .ng-richtext-{{ section.id }} {
+    padding-block: {{ section.settings.padding_top_mobile }}px;
+    background: {{ section.settings.bg_color }};
+    text-align: {{ section.settings.align }};
+  }
+  @media(min-width:990px){
+    .ng-richtext-{{ section.id }} { padding-block: {{ section.settings.padding_top }}px {{ section.settings.padding_bottom }}px; }
+  }
+{%- endstyle -%}
+<section class="ng-richtext-{{ section.id }}">
+  <div class="ng-container">
+    <div style="max-width:{{ section.settings.content_width }}rem;margin-inline:auto;">
+      {%- if section.settings.eyebrow != blank -%}
+        <div class="ng-section-header__eyebrow" style="justify-content:{{ section.settings.align }};margin-bottom:1.6rem;" data-ng-reveal>{{ section.settings.eyebrow }}</div>
+      {%- endif -%}
+      {%- if section.settings.title != blank -%}
+        <h2 style="margin-bottom:2.4rem;" data-ng-reveal data-ng-delay="1">{{ section.settings.title }}</h2>
+      {%- endif -%}
+      {%- if section.settings.content != blank -%}
+        <div class="ng-rte" style="font-size:{{ section.settings.font_size }}rem;" data-ng-reveal data-ng-delay="2">{{ section.settings.content }}</div>
+      {%- endif -%}
+      {%- if section.settings.btn_label != blank -%}
+        <div style="margin-top:3.2rem;" data-ng-reveal data-ng-delay="3">
+          <a href="{{ section.settings.btn_url }}" class="ng-btn ng-btn--primary">{{ section.settings.btn_label }}</a>
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Texte enrichi",
+  "tag": "div",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre" },
+    { "type": "inline_richtext", "id": "title", "label": "Titre", "default": "À propos de nous" },
+    { "type": "richtext", "id": "content", "label": "Contenu", "default": "<p>Partagez votre histoire et vos valeurs avec vos clients.</p>" },
+    { "type": "text", "id": "btn_label", "label": "Label bouton (optionnel)" },
+    { "type": "url", "id": "btn_url", "label": "Lien bouton" },
+    { "type": "select", "id": "align", "label": "Alignement", "options": [{"value":"left","label":"Gauche"},{"value":"center","label":"Centre"}], "default": "center" },
+    { "type": "range", "id": "content_width", "min": 48, "max": 120, "step": 8, "default": 80, "unit": "rem", "label": "Largeur max du contenu" },
+    { "type": "range", "id": "font_size", "min": 1.4, "max": 2.4, "step": 0.1, "default": 1.7, "label": "Taille du texte" },
+    { "type": "color", "id": "bg_color", "label": "Couleur de fond", "default": "#FFFFFF" },
+    { "type": "range", "id": "padding_top", "min": 40, "max": 160, "step": 8, "default": 96, "unit": "px", "label": "Padding supérieur (bureau)" },
+    { "type": "range", "id": "padding_bottom", "min": 40, "max": 160, "step": 8, "default": 96, "unit": "px", "label": "Padding inférieur (bureau)" },
+    { "type": "range", "id": "padding_top_mobile", "min": 40, "max": 100, "step": 8, "default": 64, "unit": "px", "label": "Padding supérieur (mobile)" }
+  ],
+  "presets": [{ "name": "Texte enrichi" }]
+}
+{% endschema %}

@@ -1,0 +1,88 @@
+{%- style -%}
+  .ng-testi-{{ section.id }} { padding-block: {{ section.settings.padding_top_mobile }}px {{ section.settings.padding_bottom_mobile }}px; background:{{ section.settings.bg_color }}; }
+  @media(min-width:990px){ .ng-testi-{{ section.id }} { padding-block: {{ section.settings.padding_top }}px {{ section.settings.padding_bottom }}px; } }
+{%- endstyle -%}
+
+<section class="ng-testimonials ng-testi-{{ section.id }}">
+  <div class="ng-container">
+    <div style="text-align:center;margin-bottom:5.6rem;" data-ng-reveal>
+      {%- if section.settings.eyebrow != blank -%}
+        <div class="ng-section-header__eyebrow" style="justify-content:center;margin-bottom:1.6rem;">{{ section.settings.eyebrow }}</div>
+      {%- endif -%}
+      {%- if section.settings.title != blank -%}
+        <h2>{{ section.settings.title }}</h2>
+      {%- endif -%}
+    </div>
+    <div class="ng-testimonial-grid">
+      {%- for block in section.blocks -%}
+        <div class="ng-testimonial" {{ block.shopify_attributes }} data-ng-reveal data-ng-delay="{{ forloop.index }}">
+          {%- if block.settings.rating > 0 -%}
+            <div class="ng-testimonial__stars">
+              {%- for i in (1..block.settings.rating) -%}
+                {%- render 'ng-icon', icon: 'star', size: 16 -%}
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+          {%- if block.settings.text != blank -%}
+            <blockquote class="ng-testimonial__text">"{{ block.settings.text }}"</blockquote>
+          {%- endif -%}
+          <div class="ng-testimonial__author">
+            {%- if block.settings.avatar != blank -%}
+              <div class="ng-testimonial__avatar">
+                {{ block.settings.avatar | image_url: width: 100 | image_tag: loading: 'lazy', alt: block.settings.name }}
+              </div>
+            {%- else -%}
+              <div class="ng-testimonial__avatar" style="background:var(--ng-border);display:flex;align-items:center;justify-content:center;">
+                <span style="font-size:2rem;font-weight:800;color:var(--ng-primary);">{{ block.settings.name | slice: 0 | upcase }}</span>
+              </div>
+            {%- endif -%}
+            <div>
+              <div class="ng-testimonial__name">{{ block.settings.name }}</div>
+              {%- if block.settings.role != blank -%}
+                <div class="ng-testimonial__role">{{ block.settings.role }}</div>
+              {%- endif -%}
+            </div>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Témoignages",
+  "tag": "div",
+  "max_blocks": 9,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Sur-titre", "default": "Ce que disent nos clients" },
+    { "type": "text", "id": "title", "label": "Titre", "default": "Ils nous font confiance" },
+    { "type": "color", "id": "bg_color", "label": "Fond", "default": "#F5F4F0" },
+    { "type": "range", "id": "padding_top", "min": 48, "max": 160, "step": 8, "default": 96, "unit": "px", "label": "Haut (bureau)" },
+    { "type": "range", "id": "padding_bottom", "min": 48, "max": 160, "step": 8, "default": 96, "unit": "px", "label": "Bas (bureau)" },
+    { "type": "range", "id": "padding_top_mobile", "min": 48, "max": 100, "step": 8, "default": 64, "unit": "px", "label": "Haut (mobile)" },
+    { "type": "range", "id": "padding_bottom_mobile", "min": 48, "max": 100, "step": 8, "default": 64, "unit": "px", "label": "Bas (mobile)" }
+  ],
+  "blocks": [
+    {
+      "type": "testimonial",
+      "name": "Témoignage",
+      "settings": [
+        { "type": "range", "id": "rating", "min": 1, "max": 5, "step": 1, "default": 5, "label": "Note (étoiles)" },
+        { "type": "textarea", "id": "text", "label": "Texte", "default": "Produit exceptionnel, livraison ultra-rapide. Je recommande vivement !" },
+        { "type": "text", "id": "name", "label": "Nom", "default": "Marie D." },
+        { "type": "text", "id": "role", "label": "Rôle / Titre", "default": "Cliente vérifiée" },
+        { "type": "image_picker", "id": "avatar", "label": "Photo (optionnel)" }
+      ]
+    }
+  ],
+  "presets": [{
+    "name": "Témoignages",
+    "blocks": [
+      { "type": "testimonial" },
+      { "type": "testimonial" },
+      { "type": "testimonial" }
+    ]
+  }]
+}
+{% endschema %}

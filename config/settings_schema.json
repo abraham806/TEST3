@@ -1,0 +1,139 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "New Gen",
+    "theme_version": "1.0.0",
+    "theme_author": "New Gen Studio",
+    "theme_documentation_url": "",
+    "theme_support_url": ""
+  },
+  {
+    "name": "Logo & Favicon",
+    "settings": [
+      { "type": "image_picker", "id": "logo", "label": "Logo" },
+      { "type": "range", "id": "logo_width", "min": 60, "max": 300, "step": 10, "default": 140, "unit": "px", "label": "Largeur logo — bureau" },
+      { "type": "range", "id": "logo_width_mobile", "min": 60, "max": 200, "step": 10, "default": 110, "unit": "px", "label": "Largeur logo — mobile" },
+      { "type": "text", "id": "logo_text", "label": "Texte logo (si pas d'image)", "default": "NEW GEN" },
+      { "type": "image_picker", "id": "favicon", "label": "Favicon" }
+    ]
+  },
+  {
+    "name": "Couleurs",
+    "settings": [
+      { "type": "header", "content": "Palette principale" },
+      { "type": "color", "id": "color_primary", "label": "Couleur primaire (dark)", "default": "#003049" },
+      { "type": "color", "id": "color_accent", "label": "Couleur accent / CTA", "default": "#D62828" },
+      { "type": "color", "id": "color_accent_2", "label": "Couleur accent secondaire", "default": "#F77F00" },
+      { "type": "header", "content": "Fonds" },
+      { "type": "color", "id": "color_bg", "label": "Fond principal", "default": "#FFFFFF" },
+      { "type": "color", "id": "color_bg_2", "label": "Fond alternatif", "default": "#F5F4F0" },
+      { "type": "header", "content": "Textes & bordures" },
+      { "type": "color", "id": "color_text", "label": "Couleur texte", "default": "#111111" },
+      { "type": "color", "id": "color_text_muted", "label": "Texte secondaire (grisé)", "default": "#6B6B6B" },
+      { "type": "color", "id": "color_border", "label": "Bordures", "default": "#E8E8E8" }
+    ]
+  },
+  {
+    "name": "Typographie",
+    "settings": [
+      { "type": "font_picker", "id": "type_body_font", "label": "Police corps de texte", "default": "helvetica_neue_n4" },
+      { "type": "font_picker", "id": "type_heading_font", "label": "Police titres", "default": "helvetica_neue_n7" }
+    ]
+  },
+  {
+    "name": "Mise en page",
+    "settings": [
+      { "type": "range", "id": "page_width", "min": 100, "max": 180, "step": 4, "default": 144, "unit": "rem", "label": "Largeur maximale des pages" },
+      { "type": "range", "id": "section_spacing", "min": 4, "max": 16, "step": 1, "default": 9, "unit": "rem", "label": "Espacement vertical entre sections" }
+    ]
+  },
+  {
+    "name": "Header",
+    "settings": [
+      { "type": "link_list", "id": "main_menu", "label": "Menu principal", "default": "main-menu" },
+      { "type": "checkbox", "id": "show_search", "label": "Afficher la recherche", "default": true },
+      { "type": "checkbox", "id": "show_account", "label": "Afficher le compte client", "default": true }
+    ]
+  },
+  {
+    "name": "Boutons",
+    "settings": [
+      { "type": "range", "id": "button_radius", "min": 0, "max": 40, "step": 2, "default": 4, "unit": "px", "label": "Rayon des boutons" }
+    ]
+  },
+  {
+    "name": "Cartes produit",
+    "settings": [
+      { "type": "range", "id": "card_radius", "min": 0, "max": 24, "step": 2, "default": 8, "unit": "px", "label": "Rayon des cartes" },
+      { "type": "checkbox", "id": "card_show_vendor", "label": "Afficher le vendeur", "default": false },
+      { "type": "checkbox", "id": "card_quick_add", "label": "Afficher le bouton Ajout rapide", "default": true },
+      {
+        "type": "select",
+        "id": "card_image_ratio",
+        "label": "Ratio image des cartes",
+        "options": [
+          { "value": "square",    "label": "Carré (1:1)" },
+          { "value": "portrait",  "label": "Portrait (4:5)" },
+          { "value": "landscape", "label": "Paysage (16:9)" }
+        ],
+        "default": "portrait"
+      }
+    ]
+  },
+  {
+    "name": "Formulaires",
+    "settings": [
+      { "type": "range", "id": "input_radius", "min": 0, "max": 16, "step": 2, "default": 4, "unit": "px", "label": "Rayon des champs" }
+    ]
+  },
+  {
+    "name": "Panier",
+    "settings": [
+      {
+        "type": "select",
+        "id": "cart_type",
+        "label": "Type de panier",
+        "options": [
+          { "value": "drawer",       "label": "Tiroir latéral" },
+          { "value": "page",         "label": "Page panier" },
+          { "value": "notification", "label": "Notification" }
+        ],
+        "default": "drawer"
+      },
+      {
+        "type": "select",
+        "id": "cart_icon",
+        "label": "Icône panier",
+        "options": [
+          { "value": "bag",  "label": "Sac" },
+          { "value": "cart", "label": "Chariot" }
+        ],
+        "default": "bag"
+      }
+    ]
+  },
+  {
+    "name": "Barre d'annonce",
+    "settings": [
+      { "type": "checkbox", "id": "announce_enabled", "label": "Activer la barre d'annonce", "default": true },
+      { "type": "inline_richtext", "id": "announce_text", "label": "Texte d'annonce", "default": "Livraison offerte dès 60€ d'achat · <strong>Code : FREESHIP</strong>" }
+    ]
+  },
+  {
+    "name": "Réseaux sociaux",
+    "settings": [
+      { "type": "text", "id": "social_instagram", "label": "Instagram (URL complète)" },
+      { "type": "text", "id": "social_facebook",  "label": "Facebook" },
+      { "type": "text", "id": "social_tiktok",    "label": "TikTok" },
+      { "type": "text", "id": "social_youtube",   "label": "YouTube" },
+      { "type": "text", "id": "social_twitter",   "label": "Twitter / X" },
+      { "type": "text", "id": "social_pinterest", "label": "Pinterest" }
+    ]
+  },
+  {
+    "name": "Devises",
+    "settings": [
+      { "type": "checkbox", "id": "show_currency_code", "label": "Afficher le code devise (EUR)", "default": false }
+    ]
+  }
+]

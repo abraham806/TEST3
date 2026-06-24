@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "main": {
+      "type": "ng-rich-text",
+      "settings": {
+        "align": "left",
+        "content_width": 80,
+        "font_size": 1.6,
+        "padding_top": 80,
+        "padding_bottom": 80,
+        "padding_top_mobile": 48
+      }
+    }
+  },
+  "order": ["main"]
+}

@@ -1,0 +1,17 @@
+{
+  "sections": {
+    "main": {
+      "type": "ng-product-main",
+      "settings": {
+        "show_quantity": true,
+        "show_dynamic_checkout": true,
+        "show_trust": true,
+        "trust_1": "Livraison offerte dès 60€",
+        "trust_2": "Retours gratuits 30 jours",
+        "trust_3": "Paiement 100% sécurisé",
+        "tab1_title": "Description"
+      }
+    }
+  },
+  "order": ["main"]
+}

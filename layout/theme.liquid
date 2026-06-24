@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="{{ request.locale.iso_code }}" class="ng-theme">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="{{ settings.color_primary }}">
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  {%- if settings.favicon != blank -%}
+    <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+  {%- endif -%}
+
+  <title>
+    {{ page_title }}
+    {%- unless page_title contains shop.name %} — {{ shop.name }}{% endunless -%}
+    {%- if current_page != 1 %} — Page {{ current_page }}{% endif -%}
+  </title>
+
+  {%- if page_description -%}
+    <meta name="description" content="{{ page_description | escape }}">
+  {%- endif -%}
+
+  {{ content_for_header }}
+
+  {%- liquid
+    assign body_font_bold        = settings.type_body_font | font_modify: 'weight', 'bold'
+    assign body_font_italic      = settings.type_body_font | font_modify: 'style', 'italic'
+    assign body_font_bold_italic = body_font_bold | font_modify: 'style', 'italic'
+  -%}
+
+  {% style %}
+    {{ settings.type_body_font    | font_face: font_display: 'swap' }}
+    {{ body_font_bold             | font_face: font_display: 'swap' }}
+    {{ body_font_italic           | font_face: font_display: 'swap' }}
+    {{ body_font_bold_italic      | font_face: font_display: 'swap' }}
+    {{ settings.type_heading_font | font_face: font_display: 'swap' }}
+
+    :root {
+      /* ── Polices ── */
+      --ng-font-body: {{ settings.type_body_font.family }}, {{ settings.type_body_font.fallback_families }};
+      --ng-font-head: {{ settings.type_heading_font.family }}, {{ settings.type_heading_font.fallback_families }};
+
+      /* ── Couleurs issues des réglages du thème ── */
+      --ng-primary:      {{ settings.color_primary }};
+      --ng-accent:       {{ settings.color_accent }};
+      --ng-accent-2:     {{ settings.color_accent_2 }};
+      --ng-bg:           {{ settings.color_bg }};
+      --ng-bg-2:         {{ settings.color_bg_2 }};
+      --ng-text:         {{ settings.color_text }};
+      --ng-text-muted:   {{ settings.color_text_muted }};
+      --ng-border:       {{ settings.color_border }};
+
+      /* ── Canaux RGB (pour rgba() sans valeur hex codée en dur) ── */
+      --ng-primary-rgb: {{ settings.color_primary.red }}, {{ settings.color_primary.green }}, {{ settings.color_primary.blue }};
+      --ng-accent-rgb:  {{ settings.color_accent.red }}, {{ settings.color_accent.green }}, {{ settings.color_accent.blue }};
+      --ng-accent-2-rgb:{{ settings.color_accent_2.red }}, {{ settings.color_accent_2.green }}, {{ settings.color_accent_2.blue }};
+      --ng-bg-rgb:      {{ settings.color_bg.red }}, {{ settings.color_bg.green }}, {{ settings.color_bg.blue }};
+      --ng-bg-2-rgb:    {{ settings.color_bg_2.red }}, {{ settings.color_bg_2.green }}, {{ settings.color_bg_2.blue }};
+      --ng-text-rgb:    {{ settings.color_text.red }}, {{ settings.color_text.green }}, {{ settings.color_text.blue }};
+      --ng-border-rgb:  {{ settings.color_border.red }}, {{ settings.color_border.green }}, {{ settings.color_border.blue }};
+
+      /* ── Rayon des composants ── */
+      --ng-r-btn:   {{ settings.button_radius }}px;
+      --ng-r-card:  {{ settings.card_radius }}px;
+      --ng-r-input: {{ settings.input_radius }}px;
+
+      /* ── Mise en page ── */
+      --ng-page-width:  {{ settings.page_width }}rem;
+      --ng-section-gap: {{ settings.section_spacing }}rem;
+      --ng-section-gap-sm: calc({{ settings.section_spacing }}rem * 0.55);
+    }
+  {% endstyle %}
+
+  {{ 'newgen.css' | asset_url | stylesheet_tag: preload: true }}
+
+  <script>
+    window.NgTheme = {
+      cartType:    {{ settings.cart_type | json }},
+      moneyFormat: {{ shop.money_format | json }},
+      shopName:    {{ shop.name | json }},
+    };
+  </script>
+
+  {%- unless settings.type_body_font.system? -%}
+    <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    <link rel="preload" as="font" href="{{ settings.type_body_font | font_url }}" type="font/woff2" crossorigin>
+  {%- endunless -%}
+  {%- unless settings.type_heading_font.system? -%}
+    <link rel="preload" as="font" href="{{ settings.type_heading_font | font_url }}" type="font/woff2" crossorigin>
+  {%- endunless -%}
+</head>
+
+<body class="ng-body{% if customer %} ng-logged-in{% endif %}">
+
+  {% section 'ng-header' %}
+
+  <main id="ng-main" tabindex="-1" role="main">
+    {{ content_for_layout }}
+  </main>
+
+  {% section 'ng-footer' %}
+
+  <!-- ── Cart Drawer ──────────────────────────────────────────── -->
+  <div id="ng-cart-drawer" class="ng-cart-drawer" aria-hidden="true" aria-label="Panier" role="dialog">
+    <div class="ng-cart-drawer__overlay"></div>
+    <div class="ng-cart-drawer__panel">
+      <div class="ng-cart-drawer__header">
+        <span class="ng-cart-drawer__title">Panier <span class="ng-cart-count-val"></span></span>
+        <button class="ng-icon-btn" data-ng-cart-close aria-label="Fermer le panier">
+          {%- render 'ng-icon', icon: 'close' -%}
+        </button>
+      </div>
+      <div class="ng-cart-drawer__body" id="ng-cart-body"></div>
+      <div class="ng-cart-drawer__footer">
+        <div class="ng-cart-drawer__subtotal">
+          <span>Sous-total</span>
+          <span class="ng-cart-drawer__subtotal-amount">{{ cart.total_price | money }}</span>
+        </div>
+        <a href="/checkout" class="ng-btn ng-btn--primary ng-btn--full">
+          Commander — {{ cart.total_price | money }}
+        </a>
+        <p style="font-size:1.2rem;color:var(--ng-text-muted);text-align:center;margin-top:1.2rem;">
+          Livraison calculée à la commande
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Search Overlay ───────────────────────────────────────── -->
+  <div id="ng-search-overlay" class="ng-search-overlay" aria-hidden="true" role="dialog" aria-label="Recherche">
+    <div class="ng-search-overlay__inner">
+      <form action="/search" method="get" class="ng-search-form" role="search">
+        <input type="hidden" name="type" value="product,article,page">
+        <input
+          type="search"
+          name="q"
+          id="ng-search-input"
+          class="ng-search-input"
+          placeholder="Rechercher des produits…"
+          autocomplete="off"
+          aria-label="Rechercher"
+        >
+        <button type="submit" class="ng-search-submit ng-icon-btn" aria-label="Lancer la recherche">
+          {%- render 'ng-icon', icon: 'search' -%}
+        </button>
+      </form>
+      <div id="ng-search-results" class="ng-search-results"></div>
+    </div>
+    <button class="ng-search-close ng-icon-btn" aria-label="Fermer la recherche" style="position:fixed;top:2rem;right:2rem;color:var(--ng-bg);width:4.8rem;height:4.8rem;">
+      {%- render 'ng-icon', icon: 'close' -%}
+    </button>
+  </div>
+
+  <!-- ── Toast ────────────────────────────────────────────────── -->
+  <div id="ng-toast" class="ng-toast" role="status" aria-live="polite"></div>
+
+  <script src="{{ 'newgen.js' | asset_url }}" defer></script>
+</body>
+</html>
