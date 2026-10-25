@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-exo);
+  --font-display: var(--font-exo);
+  --font-mono: var(--font-jetbrains);
+}
+
+html,
+body {
+  background: #01040a;
+  color: #e6fbff;
+  overscroll-behavior: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: var(--font-exo), system-ui, sans-serif;
+  font-weight: 300;
+}
+
+@utility hud-label {
+  font-family: var(--font-jetbrains), ui-monospace, monospace;
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: rgb(207 250 254 / 0.55);
+}
+
+@utility glass {
+  background: linear-gradient(180deg, rgb(10 30 48 / 0.55), rgb(2 10 20 / 0.6));
+  border: 1px solid rgb(103 232 249 / 0.12);
+  box-shadow:
+    0 0 0 1px rgb(0 0 0 / 0.3),
+    0 20px 60px -20px rgb(0 180 255 / 0.15);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+}
+
+@utility hud-range {
+  appearance: none;
+  width: 100%;
+  height: 2px;
+  background: rgb(103 232 249 / 0.2);
+  border-radius: 999px;
+  outline: none;
+
+  &::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    background: #e6fdff;
+    box-shadow: 0 0 12px 2px rgb(0 200 255 / 0.6);
+    cursor: pointer;
+  }
+  &::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border: 0;
+    border-radius: 999px;
+    background: #e6fdff;
+    box-shadow: 0 0 12px 2px rgb(0 200 255 / 0.6);
+    cursor: pointer;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
